@@ -41,7 +41,9 @@ function load() {
         contentType:'application/x-www-form-urlencoded',
         data: arrayPrepare("dateArray", dateArray),
        // data: "dateArray=" + dateArray,
-        
+        accepts: {
+          json: 'application/json'
+        },
         success: function(data) {
  
           /**
@@ -49,8 +51,10 @@ function load() {
            * $.parseJSON any json parse method can be used 
            *
            */
+          if (typeof data == 'string') {
+            data = JSON.parse(data);
+          }
 
-          data = JSON.parse(data);
           var msg = $("#dateArray");
           if (data && data.dates) {
             data.dates.forEach(function(e) {

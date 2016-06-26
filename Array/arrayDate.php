@@ -20,7 +20,7 @@ class DisableDate {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
-	header('Content-type', 'application/json');
+	header('Content-Type: application/json');
 	die((new DisableDate($_REQUEST['dateArray']))->json());
 } 
 
