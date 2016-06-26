@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PHP array test</title>
+	<script type="text/javascript" src="/jquery-3.0.0.min.js" ></script>
+</head>
+<body>
+<script type="text/javascript">
+$(function() {
+  load()
+})
+
+function arrayPrepare(varName, val) {
+  var result = [];
+  val.forEach(function(e) { result.push(encodeURI(varName + "[]=" + e)); });
+  return result.join('&');
+}
+
+// Function written like javascript send array, 
+// PHP accepts and respond the same array data.
+function load() {
+	dateArray = [ new Date(),new Date(),new Date(),new Date() ];
+
+	$.ajax({
+
+       type: "POST",
+       url: "arrayDate.php",
+
+       /**
+        * If we sent like data: "dateArray=" + dateArray,
+        *  PHP parse the data like string
+        * If we sent like 
+        *  data: "dateArray[]=" + dateArray,
+        * PHP will parse like array of string but content type must be 
+        *   Content-Type:application/x-www-form-urlencoded
+        * without content type also it works but not in all server
+        *
+        * Any how, both are handling in server side and retun data will be json 
+        */
+
+        contentType:'application/x-www-form-urlencoded',
+        data: arrayPrepare("dateArray", dateArray),
+       // data: "dateArray=" + dateArray,
+        
+        success: function(data) {
+ 
+          /**
+           * If we give ajax type as json then parse is not required.
+           * $.parseJSON any json parse method can be used 
+           *
+           */
+
+          data = JSON.parse(data);
+          var msg = $("#dateArray");
+          if (data && data.dates) {
+            data.dates.forEach(function(e) {
+              msg.append($('<p>').html(e))
+            });
+            msg.slideDown();
+          }
+          else {
+            msg.text('Sorry!! I am failed.').css("background-color", "red").fadeIn('slow'); 
+          }       
+        }
+    });
+}
+</script>
+<span id="dateArray">
+</body>
+</html>
